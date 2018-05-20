@@ -31,7 +31,7 @@ Now we can run multiple jobs in parallel with different resource limits and a mu
 
 Let's have a look at a simple "hello world" example to demonstrate its benefits. You need two files for your first InfraBox job. All starts with a Dockerfile in which you can define what should be executed. InfraBox will build and run the container. A very simple Dockerfile looks like this:
 
-{% highlight AnyLanguage linenos %}
+{% highlight %}
     FROM alpine
     CMD echo "Hello World"
 {% endhighlight %}
@@ -40,7 +40,7 @@ Using Docker simplifies many things. We can now define the environment (OS, pack
 
 The second file you need is _infrabox.json_ in the root directory of your project to define the jobs you want to run:
 
-```json
+{% highlight javascript %}
 {
     "version": 1,
     "jobs": [{
@@ -51,20 +51,20 @@ The second file you need is _infrabox.json_ in the root directory of your projec
         "build_only": false
     }]
 }
-```
+{% endhighlight %}
 
 As you can see we define one job with type __docker__ (InfraBox supports other job types, too, see [the InfraBox examples](https://github.com/sap/infrabox-examples)), a name, the path to the Dockerfile (docker_file), assign resource limits and tell it to not only build but also run the Docker container (build_only). That's it. You can now run the job on your local machine with the [infraboxcli](https://github.com/sap/infrabox-cli)
 
-```
+{% highlight AnyLanguage %}
 infrabox run
-```
+{% endhighlight %}
 
 Or connect your GitHub/Gerrit repository with an InfraBox instance and trigger a build every time you push to your repository (of course pull requests and statuses updates are supported).
 InfraBox will then checkout your code and start all the jobs defined in your _infrabox.json_ file by building the containers and running them with the assigned resource limits in the Kubernetes Cluster.
 
 We already mentioned that missing flexibility is an issue in some CI systems. InfraBox tries to solve that with a few features. First you can define multiple jobs for one build. Each with a separate Dockerfile and resource limits:
 
-```json
+{% highlight javascript %}
 {
     "version": 1,
     "jobs": [{
@@ -81,7 +81,7 @@ We already mentioned that missing flexibility is an issue in some CI systems. In
         "docker_file": "Dockerfile_2",
     }]
 }
-```
+{% endhighlight %}
 
 So you may use this to test your software on different operating systems, with different resource limits or to simply run different jobs in parallel. InfraBox will automatically run all jobs in parallel if the defined dependencies allow it. See our [example](https://github.com/SAP/InfraBox-examples/tree/master/dependencies) on how you can define dependencies between jobs and even transfer data from one job to another. This is useful if you i.e. want to compile your software in the first job and have one or multiple successor jobs which take the compiled binary and run some tests in different environments.
 
@@ -93,7 +93,7 @@ Last but not least InfraBox offers a flexible extension Mechanism called Service
 
 To provision a temporary namespace simply add another resource to your job definition:
 
-```json
+{% highlight javascript %}
 {
     "version": 1,
     "jobs": [{
@@ -113,7 +113,7 @@ To provision a temporary namespace simply add another resource to your job defin
         }]
     }]
 }
-```
+{% endhighlight %}
 
 The credentials for the service account are mounted into your job. For a full example how to access the namespace with _kubectl_ see our [example](https://github.com/SAP/InfraBox-examples/tree/master/service_namespace).
 
