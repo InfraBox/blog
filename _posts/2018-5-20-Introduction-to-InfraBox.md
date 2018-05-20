@@ -23,8 +23,6 @@ To better deal with these issues we came up with a new CI system called InfraBox
 
 ![_config.yml]({{ site.baseurl }}/images/2018-5-20-Introduction-to-InfraBox/Folie1.PNG)
 
-![One Job](./Folie1.PNG)
-
 Now we can run multiple jobs in parallel with different resource limits and a much better isolation.
 
 ![_config.yml]({{ site.baseurl }}/images/2018-5-20-Introduction-to-InfraBox/Folie2.PNG)
