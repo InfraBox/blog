@@ -31,7 +31,7 @@ Now we can run multiple jobs in parallel with different resource limits and a mu
 
 Let's have a look at a simple "hello world" example to demonstrate its benefits. You need two files for your first InfraBox job. All starts with a Dockerfile in which you can define what should be executed. InfraBox will build and run the container. A very simple Dockerfile looks like this:
 
-{% highlight AnyLanguage linenos %}
+{% highlight AnyLanguage %}
     FROM alpine
     CMD echo "Hello World"
 {% endhighlight %}
@@ -40,7 +40,7 @@ Using Docker simplifies many things. We can now define the environment (OS, pack
 
 The second file you need is _infrabox.json_ in the root directory of your project to define the jobs you want to run:
 
-{% highlight AnyLanguage linenos %}
+{% highlight AnyLanguage %}
 {
     "version": 1,
     "jobs": [{
@@ -64,7 +64,7 @@ InfraBox will then checkout your code and start all the jobs defined in your _in
 
 We already mentioned that missing flexibility is an issue in some CI systems. InfraBox tries to solve that with a few features. First you can define multiple jobs for one build. Each with a separate Dockerfile and resource limits:
 
-{% highlight AnyLanguage linenos %}
+{% highlight AnyLanguage %}
 {
     "version": 1,
     "jobs": [{
@@ -93,7 +93,7 @@ Last but not least InfraBox offers a flexible extension Mechanism called Service
 
 To provision a temporary namespace simply add another resource to your job definition:
 
-{% highlight AnyLanguage linenos %}
+{% highlight AnyLanguage %}
 {
     "version": 1,
     "jobs": [{
