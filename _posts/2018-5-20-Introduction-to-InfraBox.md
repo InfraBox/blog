@@ -31,10 +31,8 @@ Now we can run multiple jobs in parallel with different resource limits and a mu
 
 Let's have a look at a simple "hello world" example to demonstrate its benefits. You need two files for your first InfraBox job. All starts with a Dockerfile in which you can define what should be executed. InfraBox will build and run the container. A very simple Dockerfile looks like this:
 
-```
-FROM alpine
-CMD echo "Hello World"
-```
+    FROM alpine
+    CMD echo "Hello World"
 
 Using Docker simplifies many things. We can now define the environment (OS, packages, environment variables, etc.) for each job separately. So one job may use __debian__ another job may use __alpine__ for its tests. So you don't have to configure the worker machine anymore in a way that it can satisfy the requirements of all jobs running on it. As every job is a separate container we also gain a much better isolation. Now instead of having a shared filesystem and libraries between all the jobs we only have a shared kernel and this is rarely an issue. InfraBox does not force you to use any custom syntax either. You can write your jobs in the language you want to use, the only requirement is that it has to run in a Docker container.
 
