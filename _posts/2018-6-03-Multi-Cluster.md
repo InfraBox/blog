@@ -1,4 +1,4 @@
---
+---
 layout: post
 title: Run your CI pipelines across multiple Clusters / Clouds
 ---
@@ -30,7 +30,7 @@ As you can see the database connection is the same. This is the requirement as a
 
 Additionally you can, but don't have to, specify `--cluster-labels`. They can be used in your job definition to force the scheduler to place a job on a certain cluster.
 
-```
+{% highlight AnyLanguage %}
 {
     "version": 1,
     "jobs": [{
@@ -46,7 +46,7 @@ Additionally you can, but don't have to, specify `--cluster-labels`. They can be
         }
     }]
 }
-```
+{% endhighlight %}
 
 The `cluster.selector` can be used to specify on which cluster a job is supposed to be run. In the example the job will be run on a cluster which has the label `GCP` attached. If there are multiple clusters with this label then a cluster is chosen randomly. You may also set multiple labels in your selector. In this case a cluster is chosen which has all the labels attached.
 
@@ -54,14 +54,14 @@ There's the special label `default`. Every cluster which has this label assigned
 
 Coming back to the autoscaling scenario from above. This can be easily achieved by configuring your regular master cluster and a second worker cluster with `--cluster-labels=default` (maybe even with auto-scaling on, in case it's running on a cloud). Now you can run a lot more jobs and have to only pay for what you use on a cloud. If you want to disable a worker cluster you can do this (currently with SQL, soon in the UI):
 
-```
+{% highlight AnyLanguage %}
 UPDATE cluster SET active = false WHERE name = <WORKER_CLUSTER_NAME>
-```
+{% endhighlight %}
 
 And to enable it again:
 
-```
+{% highlight AnyLanguage %}
 UPDATE cluster SET active = true WHERE name = <WORKER_CLUSTER_NAME>
-```
+{% endhighlight %}
 
 As you can see you only need minimal configuration and you can spin up multiple InfraBox installations on different Kubernetes distributions, versions and clouds and connect them all to one big CI infrastructure.
