@@ -60,24 +60,28 @@ the `master` (also see the [installation guide](
 https://github.com/SAP/InfraBox/tree/master/docs)):
 
 {% highlight AnyLanguage %}
-python deploy/install.py \
-    -o /tmp/infrabox-configuration \
-    --root-url https://master.example.com \
-    --database postgres \
-    --postgres-host my-db-host.my-domain.com \
-    --postgres-port 5432 \
-    --postgres-username <USERNAME> \
-    --postgres-database <DATABASE> \
-    --postgres-port <PORT> \
-    --postgres-password <PASSWORD> \
-    --storage s3 \
-    --s3-secret-key <SECRET_KEY> \
-    --s3-access-key <ACCESS_KEY> \
-    --s3-region <REGION> \
-    --s3-endpoint <ENDPOINT> \
-    --s3-port <PORT> \
-    --s3-secure <true/false> \
-    <MORE_OPTIONS>
+host: master.example.com
+
+database:
+    postgres:
+        enabled: true
+        host: my-db-host.my-domain.com
+        port: 5432
+        db: # <REQUIRED>
+        username: # <REQUIRED>
+        password: # <REQUIRED>
+
+
+storage:
+    s3:
+        enabled: true
+        region: # <REQUIRED>
+        endpoint: # <REQUIRED>
+        bucket: # <REQUIRED>
+        access_key_id: # <REQUIRED>
+        secret_access_key: # <REQUIRED>
+        secure: true
+        port: 443
 {% endhighlight %}
 
 This is the configuration of a regular InfraBox instance. This basically
@@ -88,38 +92,44 @@ reconfiguration.
 The `worker` configuration is very similar:
 
 {% highlight AnyLanguage %}
-python deploy/install.py \
-    -o /tmp/infrabox-configuration \
-    --root-url https://worker.example.com \
-    --cluster-name worker \
-    --cluster-labels my-worker,GCP \
-    --database postgres \
-    --postgres-host my-db-host.my-domain.com \
-    --postgres-port 5432 \
-    --postgres-username <USERNAME> \
-    --postgres-database <DATABASE> \
-    --postgres-password <PASSWORD> \
-    --storage gcs
-    --gcs-service-account-key-file <PATH_TO_THE_SERVICE_ACCOUNT_KEY_FILE>
-    --gcs-bucket <NAME>
-    <MORE_OPTIONS>
+host: worker.example.com
+
+cluster:
+    name: worker
+    labels: my-worker,GCP
+
+database:
+    postgres:
+        enabled: true
+        host: my-db-host.my-domain.com
+        port: 5432
+        db: # <REQUIRED>
+        username: # <REQUIRED>
+        password: # <REQUIRED>
+
+
+storage:
+    gcs:
+        enabled: true
+        bucket: # <REQUIRED>
+        service_account: # <REQUIRED>
 {% endhighlight %}
 
 As you can see the database connection is the same. This is the requirement
 as all installations share the same database and use it to synchronize the
 states. For the `worker`s we have decided to go with a different storage, in
 this case GCS, because we assume the cluster is running on GCP and GCS is
-then a natural choice. Also the `worker` has a different `--root-url`. This
+then a natural choice. Also the `worker` has a different `host`. This
 is important, because the API servers of each installation must talk to
 each other. So you have to make sure that you assign a domain to each
 cluster which can be accessed by the other clusters. The big difference to
-the `master` is the configuration for the `--cluster-name` and
-`--cluster-labels`. The `--cluster-name` decides whether this is the
-`master` or `worker`. The default value for `--cluster-name` is `master`.
+the `master` is the configuration for the `cluster.name` and
+`cluster.labels`. The `cluster.name` decides whether this is the
+`master` or `worker`. The default value for `cluster.name` is `master`.
 Every other name is treated as a `worker`. Make sure you have only one
 cluster with the name `master`!
 
-Additionally you can, but don't have to, specify `--cluster-labels`. They
+Additionally you can, but don't have to, specify `cluster.labels`. They
 can be used in your job definition to force the scheduler to place a job on
 a certain cluster.
 
@@ -150,17 +160,17 @@ attached.
 
 There's the special label `default`. Every cluster which has this label
 assigned is supposed to run jobs which don't have any selector set. If you
-dont set `--cluster-labels` then the `default` label will be attached to
+dont set `cluster.labels` then the `default` label will be attached to
 the cluster, meaning that the cluster may start every job which doesn't
 have a `label.selector` forcing it to some other cluster. You may also set
 the `default` label together with other labels like
-`--cluster-labels=default,GCP`. Then every job which does not have a
+`cluster.labels=default,GCP`. Then every job which does not have a
 `cluster.selector` and the ones with a selector for `GCP` will be run on
 this cluster.
 
 Coming back to the autoscaling scenario from above. This can be easily
 achieved by configuring your regular `master` cluster and a second `worker`
-cluster with `--cluster-labels=default` (maybe even with auto-scaling on,
+cluster with `cluster.labels=default` (maybe even with auto-scaling on,
 in case it's running on a cloud). Now you can run a lot more jobs and have
 to only pay for what you use on a cloud. If you want to disable a `worker`
 cluster you can do this (currently with SQL, soon in the UI):
